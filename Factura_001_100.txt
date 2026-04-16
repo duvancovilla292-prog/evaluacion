@@ -1,0 +1,12 @@
+
+FECHA: 2026-04-16
+MESA: mesa1
+CLIENTE: Julio | ID: 100
+TEL: 311 | EMAIL: tt
+------------------------------------------------------------
+COD | NOMBRE | CANT | V.UNIT | IVA | SUBTOTAL
+001 | queso | 100 | 10000.0 | 1000.0 | 1100000.0
+------------------------------------------------------------
+TOTAL A PAGAR: 1100000.0
+ El descuento Total es: 11000.0
+ El descuento aplicado es: 1089000.0
