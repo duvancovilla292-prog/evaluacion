@@ -1,22 +1,31 @@
 import csv
 import datetime 
 import descuent as D
+import os
+
+def obtener_ruta(archivo):
+    carpeta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    os.makedirs(carpeta, exist_ok=True)
+    return os.path.join(carpeta, archivo.strip("/"))
+
 def guardar_en_csv(nombre_archivo, headers, datos):
+    rut = obtener_ruta(nombre_archivo)
     existe = True
     try: 
-        with open(nombre_archivo, "r") as f: pass
+        with open(rut, "r") as f: pass
     except FileNotFoundError: 
         existe = False
     
-    with open(nombre_archivo, "a", newline="") as f:
+    with open(rut, "a", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=headers)
         if not existe:
             writer.writeheader()
         writer.writerow(datos)
         
 def leer(entity,nombre_archivo): 
+    rut = obtener_ruta(nombre_archivo)
     print(f"----{entity}-----")
-    with open(nombre_archivo,"r") as f:
+    with open(rut,"r") as f:
             lectura = csv.DictReader(f)
             for d in lectura:
                  if nombre_archivo == "Productos.csv":
@@ -102,13 +111,15 @@ def FACTURA():
     print("--- INICIAR FACTURACIÓN ---")
     cod_m = input("Ingrese código de mesa: ")
     id_c = input("Ingrese identificación del cliente: ")
-
+    
     try:
-        with open("Mesas.csv", "r") as f:
+        rut = obtener_ruta("Mesas.csv")
+        with open(rut, "r") as f:
             for m in csv.DictReader(f):
                 if m['codigo'] == cod_m:
                     mesa_actual = m
-        with open("Clientes.csv", "r") as f:
+        rut = obtener_ruta("Clientes.csv")
+        with open(rut, "r") as f:
             for c in csv.DictReader(f):
                 if c['Identificacion'] == id_c: cliente_actual = c
     except FileNotFoundError:
@@ -129,7 +140,8 @@ def FACTURA():
     while True:
         cod_p = input("Código del producto: ")
         try:
-            with open("Productos.csv", "r") as f:
+            rut = obtener_ruta("Productos.csv")
+            with open(rut, "r") as f:
                 for p in csv.DictReader(f):
                     if p['codigo'] == cod_p: prod_encontrado = p
         except FileNotFoundError: break
@@ -169,14 +181,17 @@ def FACTURA():
     print(diseno)
 
     if input("¿Guardar factura? (s/n): ").lower() == 's':
-        with open(f"Factura_{cod_m}_{id_c}.txt", "w") as f:
+        rut = obtener_ruta(f"Factura_{cod_m}_{id_c}.txt")
+        with open(rut, "w") as f:
         	 f.write(diseno)
     existe_v = True
+    rut = obtener_ruta("Ventas.csv")
     try: 
-    	with open("Ventas.csv", "r"):pass
+    	with open(rut, "r"):pass
     except: 
     	existe_v = False
-    with open("Ventas.csv", "a", newline="") as f:
+    rut = obtener_ruta("Ventas.csv")
+    with open(rut, "a", newline="") as f:
         headers_v = ["fecha", "mesa","producto" , "cant_t", "bruto", "iva_t", "subtotal","descuento %","descuento aplicado"]
         writer = csv.DictWriter(f, fieldnames=headers_v)
         if not existe_v: 
@@ -193,8 +208,9 @@ def REPORTE_DE_VENTAS():
     
     print("\n--- RESUMEN DE VENTAS ---")
     print("Mesa | Cant | Bruto | IVA | Subtotal")
+    rut = obtener_ruta("Ventas.csv")
     try:
-        with open("Ventas.csv", "r") as f:
+        with open(rut, "r") as f:
             for v in csv.DictReader(f):
                 if v['fecha'] == fecha_b:
                     print(f"{v['mesa']} | {v['cant_t']} | {v['bruto']} | {v['iva_t']} | {v['subtotal']}")
